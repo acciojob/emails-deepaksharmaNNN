@@ -31,22 +31,24 @@ public class Gmail extends Email {
         // It is guaranteed that:
         // 1. Each mail in the inbox is distinct.
         // 2. The mails are received in non-decreasing order. This means that the date of a new mail is greater than equal to the dates of mails received already.
-        if(inbox.size() == inboxCapacity){
-            trash.add(inbox.poll());
+        if (this.inbox.size() == this.inboxCapacity) {
+            this.trash.add((Mail)this.inbox.poll());
         }
-        inbox.add(new Mail(date,sender,message));
+
+        this.inbox.add(new Mail(date, sender, message));
     }
 
     public void deleteMail(String message){
         // Each message is distinct
         // If the given message is found in any mail in the inbox, move the mail to trash, else do nothing
-        Iterator<Mail> iterator = inbox.iterator();
-        while (iterator.hasNext()) {
-            Mail mail = iterator.next();
+        Iterator<Mail> iterator = this.inbox.iterator();
+
+        while(iterator.hasNext()) {
+            Mail mail = (Mail)iterator.next();
             if (mail.message.equals(message)) {
-                trash.add(mail);
+                this.trash.add(mail);
                 iterator.remove();
-                break;  // Assuming each message is distinct, we can break after the first match
+                break;
             }
         }
     }
@@ -54,13 +56,13 @@ public class Gmail extends Email {
     public String findLatestMessage(){
         // If the inbox is empty, return null
         // Else, return the message of the latest mail present in the inbox
-        return inbox.isEmpty() ? null : inbox.peek().message;
+        return this.inbox.isEmpty() ? null : ((Mail)this.inbox.peek()).message;
     }
 
     public String findOldestMessage(){
         // If the inbox is empty, return null
         // Else, return the message of the oldest mail present in the inbox
-        return inbox.isEmpty() ? null : ((LinkedList<Mail>) inbox).getLast().message;
+        return this.inbox.isEmpty() ? null : ((Mail)((LinkedList)this.inbox).getLast()).message;
 
     }
 
@@ -68,11 +70,15 @@ public class Gmail extends Email {
         //find number of mails in the inbox which are received between given dates
         //It is guaranteed that start date <= end date
         int count = 0;
-        for(Mail mail : inbox){
-            if(isDateBetween(mail.date,start,end)){
-                count++;
+        Iterator var4 = this.inbox.iterator();
+
+        while(var4.hasNext()) {
+            Mail mail = (Mail)var4.next();
+            if (this.isDateBetween(mail.date, start, end)) {
+                ++count;
             }
         }
+
         return count;
     }
     private boolean isDateBetween(Date date, Date start, Date end){
@@ -81,24 +87,24 @@ public class Gmail extends Email {
 
     public int getInboxSize(){
         // Return number of mails in inbox
-        return inbox.size();
+        return this.inbox.size();
 
     }
 
     public int getTrashSize(){
         // Return number of mails in Trash
-        return trash.size();
+        return this.trash.size();
 
     }
 
     public void emptyTrash(){
         // clear all mails in the trash
-        trash.clear();
+        this.trash.clear();
 
     }
 
     public int getInboxCapacity() {
         // Return the maximum number of mails that can be stored in the inbox
-        return inboxCapacity;
+        return this.inboxCapacity;
     }
 }
