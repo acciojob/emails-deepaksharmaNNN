@@ -4,7 +4,7 @@ import java.util.*;
 
 public class Gmail extends Email {
 
-    int inboxCapacity; //maximum number of mails inbox can store
+    final int inboxCapacity; //maximum number of mails inbox can store
     //Inbox: Stores mails. Each mail has date (Date), sender (String), message (String). It is guaranteed that message is distinct for all mails.
     //Trash: Stores mails. Each mail has date (Date), sender (String), message (String)
     private static class Mail{
@@ -17,8 +17,8 @@ public class Gmail extends Email {
             this.message = message;
         }
     }
-    private Queue<Mail> inbox;
-    private Queue<Mail> trash;
+    private final Deque<Mail> inbox;
+    private final Deque<Mail> trash;
     public Gmail(String emailId, int inboxCapacity) {
         super(emailId);
         this.inboxCapacity = inboxCapacity;
@@ -32,7 +32,7 @@ public class Gmail extends Email {
         // 1. Each mail in the inbox is distinct.
         // 2. The mails are received in non-decreasing order. This means that the date of a new mail is greater than equal to the dates of mails received already.
         if (this.inbox.size() == this.inboxCapacity) {
-            this.trash.add((Mail)this.inbox.poll());
+            this.trash.add(this.inbox.poll());
         }
 
         this.inbox.add(new Mail(date, sender, message));
@@ -44,7 +44,7 @@ public class Gmail extends Email {
         Iterator<Mail> iterator = this.inbox.iterator();
 
         while(iterator.hasNext()) {
-            Mail mail = (Mail)iterator.next();
+            Mail mail = iterator.next();
             if (mail.message.equals(message)) {
                 this.trash.add(mail);
                 iterator.remove();
@@ -56,13 +56,13 @@ public class Gmail extends Email {
     public String findLatestMessage(){
         // If the inbox is empty, return null
         // Else, return the message of the latest mail present in the inbox
-        return this.inbox.isEmpty() ? null : ((Mail)this.inbox.peek()).message;
+        return this.inbox.isEmpty() ? null : this.inbox.peek().message;
     }
 
     public String findOldestMessage(){
         // If the inbox is empty, return null
         // Else, return the message of the oldest mail present in the inbox
-        return this.inbox.isEmpty() ? null : ((Mail)((LinkedList)this.inbox).getLast()).message;
+        return this.inbox.isEmpty() ? null : ((Mail)((LinkedList<?>)this.inbox).getLast()).message;
 
     }
 
@@ -70,15 +70,12 @@ public class Gmail extends Email {
         //find number of mails in the inbox which are received between given dates
         //It is guaranteed that start date <= end date
         int count = 0;
-        Iterator var4 = this.inbox.iterator();
 
-        while(var4.hasNext()) {
-            Mail mail = (Mail)var4.next();
+        for (Mail mail : this.inbox) {
             if (this.isDateBetween(mail.date, start, end)) {
                 ++count;
             }
         }
-
         return count;
     }
     private boolean isDateBetween(Date date, Date start, Date end){

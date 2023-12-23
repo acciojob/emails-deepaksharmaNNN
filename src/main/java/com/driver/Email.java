@@ -2,7 +2,7 @@ package com.driver;
 
 public class Email {
 
-    private String emailId;
+    private final String emailId;
     private String password;
 
     public Email(String emailId){
@@ -19,7 +19,7 @@ public class Email {
     }
 
     public void changePassword(String oldPassword, String newPassword){
-        //Change password only if the oldPassword is equal to current password and the new password meets all of the following:
+        //Change password only if the oldPassword is equal to current password and the new password meets all the following:
         // 1. It contains at least 8 characters
         // 2. It contains at least one uppercase letter
         // 3. It contains at least one lowercase letter

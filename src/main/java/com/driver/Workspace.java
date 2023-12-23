@@ -5,7 +5,7 @@ import java.util.Iterator;
 
 public class Workspace extends Gmail{
 
-    private ArrayList<Meeting> calendar = new ArrayList<>(); // Stores all the meetings
+    private final ArrayList<Meeting> calendar = new ArrayList<>(); // Stores all the meetings
 
     public Workspace(String emailId) {
         // The inboxCapacity is equal to the maximum value an integer can store.
@@ -26,13 +26,11 @@ public class Workspace extends Gmail{
         int maxMeetings = 0;
 
         int overlappingMeetings;
-        for(Iterator var2 = this.calendar.iterator(); var2.hasNext(); maxMeetings = Math.max(maxMeetings, overlappingMeetings)) {
-            Meeting currentMeeting = (Meeting)var2.next();
+        for(Iterator<Meeting> var2 = this.calendar.iterator(); var2.hasNext(); maxMeetings = Math.max(maxMeetings, overlappingMeetings)) {
+            Meeting currentMeeting = var2.next();
             overlappingMeetings = 1;
-            Iterator var5 = this.calendar.iterator();
 
-            while(var5.hasNext()) {
-                Meeting otherMeeting = (Meeting)var5.next();
+            for (Meeting otherMeeting : this.calendar) {
                 if (currentMeeting != otherMeeting && currentMeeting.getEndTime().isAfter(otherMeeting.getStartTime()) && currentMeeting.getStartTime().isBefore(otherMeeting.getEndTime())) {
                     ++overlappingMeetings;
                 }
